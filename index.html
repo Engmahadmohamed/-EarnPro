@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EarnPro - Watch Ads & Earn</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/000000/money-bag.png"/>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Ad SDK script -->
+  <script src='//whephiwums.com/sdk.js' data-zone='8980914' data-sdk='show_8980914'></script>
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="app">
+    <!-- Header -->
+    <header class="status-bar">
+      <div class="status-bar-content">
+        <div class="title">
+          <i class="fas fa-coins"></i> EarnPro
+        </div>
+        <button class="logout" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </header>
+    
+    <!-- Auth Screen -->
+    <section class="screen" id="authScreen">
+      <div class="auth-content">
+        <div class="auth-header">
+          <i class="fas fa-coins auth-icon"></i>
+          <h1>Welcome to EarnPro</h1>
+          <p>Watch ads and earn real money</p>
+        </div>
+        <div class="auth-form">
+          <div class="input-group">
+            <label for="usernameInput">Phone Number</label>
+            <input type="tel" id="usernameInput" placeholder="Enter your phone number">
+          </div>
+          <div class="input-group">
+            <label for="contactInput">Contact Info (Optional)</label>
+            <input type="text" id="contactInput" placeholder="Telegram/WhatsApp/Email">
+          </div>
+          <button class="auth-btn" onclick="login()">
+            <i class="fas fa-sign-in-alt"></i> Get Started
+          </button>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Main Navigation Screen -->
+    <section class="screen" id="navScreen" style="display: none;">
+      <!-- Home Screen -->
+      <div id="homeScreen" class="sub-screen">
+        <div class="balance-card">
+          <div class="balance-header">
+          <div class="label">Available Balance</div>
+          <div class="amount" id="balance">$0.00</div>
+          </div>
+          <div class="stats">
+            <div class="stat">
+              <i class="fas fa-chart-line stat-icon"></i>
+              <div class="value" id="todayEarnings">$0.00</div>
+              <div class="caption">Today's Earnings</div>
+            </div>
+            <div class="stat">
+              <i class="fas fa-play-circle stat-icon"></i>
+              <div class="value" id="adsWatched">0</div>
+              <div class="caption">Ads Watched</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="action-button primary" onclick="watchAd()">
+            <i class="fas fa-play"></i>
+            Watch Ad
+            <small>Earn $0.01 per ad</small>
+          </button>
+          <button class="action-button secondary" onclick="showWithdrawModal()">
+            <i class="fas fa-wallet"></i>
+            Withdraw
+            <small>Minimum $5.00</small>
+          </button>
+        </div>
+        <!-- Update the history section -->
+        <div class="history-section">
+            <div class="section-header">
+                <h3><i class="fas fa-history"></i> Recent Activity</h3>
+            </div>
+            <div class="history-list" id="historyList">
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>No activity yet</p>
+                    <small>Your recent transactions will appear here</small>
+                </div>
+            </div>
+        </div>
+      </div>
+      
+      <!-- Profile Screen -->
+      <div id="profileScreen" class="sub-screen" style="display: none;">
+        <div class="profile-card">
+          <div class="profile-header">
+            <i class="fas fa-user-circle profile-icon"></i>
+            <h2 id="profileUsername"></h2>
+          </div>
+          <div class="profile-stats">
+            <div class="profile-stat">
+              <i class="fas fa-dollar-sign"></i>
+              <span>Total Earned</span>
+              <strong id="totalEarned">$0.00</strong>
+            </div>
+            <div class="profile-stat">
+              <i class="fas fa-users"></i>
+              <span>Referrals</span>
+              <strong id="referralCount">0</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Referral Screen -->
+      <div id="referralScreen" class="sub-screen" style="display: none;">
+        <div class="referral-card">
+          <div class="referral-header">
+            <i class="fas fa-gift"></i>
+            <h2>Invite Friends</h2>
+            <p>Earn $<span id="referralReward">0.05</span> for each referral (Max <span id="maxReferrals">5</span>)</p>
+            <div class="referral-progress">
+              <div class="progress-text">
+                <span>Referrals: <strong id="currentReferrals">0</strong>/<span id="totalMaxReferrals">5</span></span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="referralProgress"></div>
+              </div>
+            </div>
+          </div>
+          <div class="referral-content">
+            <div class="referral-link-container">
+              <input type="text" id="referralLink" readonly>
+              <button class="copy-button" onclick="copyReferral()">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+            <div class="share-buttons">
+              <button onclick="shareOnTelegram()">
+                <i class="fab fa-telegram"></i> Share on Telegram
+              </button>
+              <button onclick="shareOnWhatsApp()">
+                <i class="fab fa-whatsapp"></i> Share on WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Navigation Banner -->
+      <nav class="nav-banner">
+        <button class="nav-button active" id="navHome" onclick="showScreen('homeScreen')">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </button>
+        <button class="nav-button" id="navProfile" onclick="showScreen('profileScreen')">
+          <i class="fas fa-user"></i>
+          <span>Profile</span>
+        </button>
+        <button class="nav-button" id="navReferral" onclick="showScreen('referralScreen')">
+          <i class="fas fa-gift"></i>
+          <span>Refer</span>
+        </button>
+      </nav>
+    </section>
+  </div>
+  
+  <!-- Withdraw Modal -->
+  <div class="modal" id="withdrawModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-wallet"></i> Withdraw Funds</h3>
+        <button class="close-btn" onclick="closeWithdrawModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Replace the existing payment method section in withdrawModal -->
+        <!-- Replace the payment-method section in the withdrawModal -->
+        <div class="input-group payment-method">
+            <label for="paymentMethod">Payment Method</label>
+            <div class="payment-options">
+                <div class="payment-option" data-method="mpesa" onclick="selectPayment('mpesa')">
+                    <span>M-Pesa</span>
+                </div>
+                <div class="payment-option" data-method="airtel" onclick="selectPayment('airtel')">
+                    <span>Airtel Money</span>
+                </div>
+                <div class="payment-option" data-method="telkom" onclick="selectPayment('telkom')">
+                    <span>T-Kash</span>
+                </div>
+                <div class="payment-option" data-method="equitel" onclick="selectPayment('equitel')">
+                    <span>Equitel</span>
+                </div>
+            </div>
+        </div>
+        <div class="input-group phone-input">
+            <label for="phoneNumber">Phone Number</label>
+            <div class="phone-field">
+                <span class="country-code">+254</span>
+                <input type="tel" id="phoneNumber" placeholder="Enter mobile money number" maxlength="9">
+            </div>
+        </div>
+        <div class="input-group">
+          <label for="withdrawAmount">Amount ($)</label>
+          <div class="amount-input">
+            <span class="currency">$</span>
+            <input type="number" id="withdrawAmount" min="5" step="0.01" value="5.00">
+          </div>
+        </div>
+        <button class="primary-btn" onclick="processWithdraw()">
+          <i class="fas fa-check"></i> Confirm Withdrawal
+        </button>
+        <button class="secondary-btn" onclick="closeWithdrawModal()">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Add this right before the closing body tag -->
+  <div class="error-modal" id="errorModal">
+      <div class="error-content">
+          <i class="fas fa-exclamation-circle"></i>
+          <span id="errorMessage">Insufficient balance</span>
+      </div>
+  </div>
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+  
+  <!-- Channel Join Modal -->
+  <div class="modal" id="channelJoinModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fab fa-telegram"></i> Join Our Channel</h3>
+      </div>
+      <div class="modal-body">
+        <div class="channel-join-content">
+          <div class="channel-icon">
+            <i class="fab fa-telegram"></i>
+          </div>
+          <h4>Join Our Official Channel</h4>
+          <p>To continue using EarnPro, please join our official Telegram channel for important updates and announcements.</p>
+          <a href="https://t.me/adcash_B" target="_blank" class="join-channel-btn">
+            <i class="fab fa-telegram"></i> Join Channel
+          </a>
+          <button class="verify-btn" onclick="verifyChannelJoin()">
+            <i class="fas fa-check-circle"></i> I've Joined
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module">
+    // Import Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, get, set, update, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBS2R4gek15yUJ3UKC52p3CIA-TrcW_6_g",
+        authDomain: "cashapp-93fa6.firebaseapp.com",
+        databaseURL: "https://cashapp-93fa6-default-rtdb.firebaseio.com",
+        projectId: "cashapp-93fa6",
+        storageBucket: "cashapp-93fa6.firebasestorage.app",
+        messagingSenderId: "115066700272",
+        appId: "1:115066700272:web:0a1b9490a7dda3ffea9d35"
+    };
+
+    try {
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        // Make Firebase instances available globally
+        window.db = db;
+        window.auth = auth;
+        window.dbRef = ref;
+        window.dbGet = get;
+        window.dbSet = set;
+        window.dbUpdate = update;
+        window.dbPush = push;
+        window.dbOnValue = onValue;
+        window.signInAnonymously = signInAnonymously;
+
+        console.log("Firebase initialized successfully");
+    } catch (error) {
+        console.error("Firebase initialization error:", error);
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

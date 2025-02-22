@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EarnPro Admin Panel</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+    
+    <link rel="stylesheet" href="admin-styles.css">
+
+    <script type="module">
+        // Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBS2R4gek15yUJ3UKC52p3CIA-TrcW_6_g",
+            authDomain: "cashapp-93fa6.firebaseapp.com",
+            databaseURL: "https://cashapp-93fa6-default-rtdb.firebaseio.com",
+            projectId: "cashapp-93fa6",
+            storageBucket: "cashapp-93fa6.firebasestorage.app",
+            messagingSenderId: "115066700272",
+            appId: "1:115066700272:web:0a1b9490a7dda3ffea9d35"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        // Make Firebase instances available globally
+        window.db = db;
+        window.dbRef = ref;
+        window.dbGet = get;
+        window.dbSet = set;
+        window.dbUpdate = update;
+        window.dbOnValue = onValue;
+    </script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-coins"></i>
+                <h2>EarnPro Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item" data-screen="dashboard">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </button>
+                <button class="nav-item" data-screen="users">
+                    <i class="fas fa-users"></i> Users
+                </button>
+                <button class="nav-item" data-screen="withdrawals">
+                    <i class="fas fa-wallet"></i> Withdrawals
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Screen -->
+            <section class="screen active" id="dashboard">
+                <h1>Dashboard</h1>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Users</h3>
+                            <p id="totalUsers">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-play"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Ads Watched</h3>
+                            <p id="totalAdsWatched">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Earnings</h3>
+                            <p id="totalEarnings">$0.00</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                        <div class="stat-info">
+                            <h3>Pending Withdrawals</h3>
+                            <p id="pendingWithdrawals">0</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Screen -->
+            <section class="screen" id="users">
+                <h1>Users</h1>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Phone Number</th>
+                                <th>Balance</th>
+                                <th>Ads Watched</th>
+                                <th>Total Earned</th>
+                                <th>Join Date</th>
+                                <th>Last Active</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Withdrawals Screen -->
+            <section class="screen" id="withdrawals">
+                <h1>Withdrawal Requests</h1>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Amount</th>
+                                <th>EVC Number</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="withdrawalsTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- User Details Modal -->
+    <div class="modal" id="userDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>User Details</h2>
+                <button class="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="userDetailsContent"></div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html> 
