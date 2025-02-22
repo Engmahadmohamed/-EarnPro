@@ -169,7 +169,7 @@ async function loadUserData() {
         // Update referral link
         const referralLink = document.getElementById("referralLink");
         if (referralLink && userData.referralCode) {
-            referralLink.value = `https://t.me/Ad_Cashbot?start=${userData.referralCode}`;
+            referralLink.value = `https://earn-pro.vercel.app/?ref=${userData.referralCode}`;
         }
 
         // Update other UI elements
@@ -257,7 +257,7 @@ function updateUI() {
     // Update referral link with value instead of textContent
     const referralLink = document.getElementById("referralLink");
     if (referralLink && userData && userData.referralCode) {
-        referralLink.value = `https://t.me/Ad_Cashbot?start=${userData.referralCode}`;
+        referralLink.value = `https://earn-pro.vercel.app/?ref=${userData.referralCode}`;
     }
     document.getElementById("profileUsername").textContent = currentUser;
     updateReferralLink();
